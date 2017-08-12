@@ -22,3 +22,9 @@
 [submodule "pack/github/start/unite.vim"]
 	path = pack/github/start/unite.vim
 	url = https://github.com/Shougo/unite.vim.git
+[submodule "pack/github/start/neosnippet-snippets"]
+	path = pack/github/start/neosnippet-snippets
+	url = https://github.com/shouP/neosnippet-snippets.git
+[submodule "pack/github/start/vim-cpp"]
+	path = pack/github/start/vim-cpp
+	url = https://github.com/vim-jp/vim-cpp.git

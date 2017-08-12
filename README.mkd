@@ -1,0 +1,6 @@
+My Vim settings and plugins
+===================
+This repository uses git submodule.
+Please clone with --recursive option.
+
+Thanks for all plugin developers!
