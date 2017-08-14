@@ -361,8 +361,6 @@ augroup MyAuGroup
 	autocmd FileType c,cpp  setlocal fdls=2
 	autocmd FileType c,cpp  setlocal foldcolumn=3
 	" autocmd FileType c,cpp  setlocal foldminlines=20
-	" 必ず最大化して起動
-	autocmd FileType c,cpp  simalt ~x
 	" autocmd FileType c,cpp	setlocal includeexpr=substitute(v:fname,'^\\/','','') | setlocal path+=./;/
 	" autocmd FileType c,cpp  set foldmarker=\/\*\*,\*\/
 
@@ -371,15 +369,6 @@ augroup MyAuGroup
 	"-----------------------------------------------------------------------
 	" autocmd FileType c,cpp setlocal includeexpr=substitute(v:fname,'.cpp','h','g')
 
-augroup END
-"}}}
-" augroup ColorSettings"{{{
-augroup ColorSettings
-	autocmd!
-	autocmd FileType txt  colorscheme desert
-	autocmd FileType log  colorscheme desert
-	autocmd FileType bin  colorscheme desert
-	autocmd FileType cpp  colorscheme jellybeans
 augroup END
 "}}}
 

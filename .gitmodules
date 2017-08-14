@@ -28,3 +28,6 @@
 [submodule "pack/github/start/vim-cpp"]
 	path = pack/github/start/vim-cpp
 	url = https://github.com/vim-jp/vim-cpp.git
+[submodule "pack/github/start/qfixgrep"]
+	path = pack/github/start/qfixgrep
+	url = https://github.com/fuenor/qfixgrep.git
