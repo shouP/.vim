@@ -2,21 +2,31 @@ set nocompatible
 source $VIMRUNTIME/vimrc_example.vim
 
 " Vimそのものの動作設定"{{{
+set fileformat=unix
+set encoding=utf-8
 "color setting
-colorscheme jellybeans
 set background=dark
 "ファイル保存ダイアログの初期ディレクトリをバッファファイル位置に設定
 set browsedir=buffer
 "クリップボードをWindowsと連携
-set clipboard=unnamed
+" set clipboard=unnamed
+set clipboard=unnamed,autoselect
 "変更中のファイルでも、保存しないで他のファイルを表示
 set hidden
+"font setting
+" set gfn=MeiryoKe_Gothic:h10:cSHIFTJIS
+set guifont=MigMix_1M:h10:cSHIFTJIS
+
 "行末折り返しを禁止
 set tw=0
 "バックアップを作成しない
 set nobackup
 "スワップファイルを作成しない
 set noswapfile
+"行数
+" set lines=100
+"列数
+" set co=140
 "括弧の入力時にカーソルを対応する括弧の上に一定時間表示させる
 set showmatch
 "マッチした括弧の始めを表示する時間(100ms order)
@@ -45,10 +55,16 @@ set guioptions-=T
 set guioptions-=m
 "日本語の行の連結時には空白を入力しない
 set formatoptions+=mM
+set so=0
+
+" このセクションの項目はデフォルトのvimrcで上書きされてしまうため、ここで設定 {{{
+" しても元に戻されてしまう。そのため、gvimrcに記述しないとダメっぽい。
 " コマンド行の高さを減らす
 set cmdheight=1
 " ステータス行を無くして、画面描画をより広くする
 set laststatus=0
+"}}}
+"
 let mapleader = ","
 let g:netrw_winsize   = 30
 
@@ -57,6 +73,7 @@ set guioptions-=m
 " 左のスクロールバーを非表示
 set guioptions-=L
 
+set undodir=z:/.vim/undo
 "}}}
 
 " 現在のファイルに対する動作設定"{{{
@@ -88,12 +105,51 @@ set softtabstop=0
 " 8進数として扱わない
 set nrformats-=octal
 " 検索時、大文字小文字を無視する
-set ignorecase " デフォルトで行折り返ししない
+set ignorecase
+" デフォルトで行折り返ししない
 set wrap!
 "tagファイルを再帰的に遡って探す
 " set tags=tags;
 " leaderを変更
 "}}}
+
+" cindent settings"{{{
+" CのSwitchCaseで、caseのインデントがswitchに合うようになる。
+set cindent cino+=:0
+" func( ... \n ...) のとき、カッコのインデントを下げる。
+set cindent cino+=m1
+" C++のラベルをインデント開始に合わせる。class {} のなかのpublic:みたいなやつ
+" がきれいに合うようになる。
+set cindent cino+=g0
+" 関数の戻り型の宣言を N 文字インデントする。
+set cindent cino+=t0
+" N が 0 でなければVimはcaseラベル後の文の替わりに、caseラベルそ
+" のものを基本にして配置を行う。
+set cindent cino+=l-1
+" K&Rスタイルの関数宣言の引数宣言を N 文字インデントする。
+set cindent cino+=p0
+" インデントしない文字列を設定
+" set cinkeys = "0{,0},0),:,!^F,o,O,e"
+"}}}
+
+" ファイル名表示
+set statusline=%F
+" 変更チェック表示
+set statusline+=%m
+" 読み込み専用かどうか表示
+set statusline+=%r
+" ヘルプページなら[HELP]と表示
+set statusline+=%h
+" プレビューウインドウなら[Prevew]と表示
+set statusline+=%w
+" これ以降は右寄せ表示
+set statusline+=%=
+" file encoding
+set statusline+=[ENC=%{&fileencoding}]
+" 現在行数/全行数
+set statusline+=[LOW=%l/%L]
+" ステータスラインを常に表示(0:表示しない、1:2つ以上ウィンドウがある時だけ表示)
+set laststatus=2
 
 " vimrcを編集した後にすぐ反映させるための設定とか"{{{
 augroup VimrcReloadGrp
@@ -103,38 +159,47 @@ augroup VimrcReloadGrp
 		autocmd VimrcReloadGrp BufWritePost $MYVIMRC nested source $MYVIMRC
 	else
 		" .vimrcの再読込時にも色が変化するようにする
-		autocmd VimrcReloadGrp BufWritePost $MYVIMRC source $MYVIMRC |
-					\if has('gui_running') | source $MYGVIMRC
+		autocmd VimrcReloadGrp BufWritePost $MYVIMRC source $MYVIMRC | if has('gui_running') | source $MYGVIMRC
 		autocmd VimrcReloadGrp BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
+		" autocmd VimrcReloadGrp BufWritePost $MYVIMRC call writefile($MYVIMRC, "A:/env/vim/vim_config", 'b')
 	endif
-augroup END
 
-"入力モード時、ステータスラインのカラーを変更
-augroup InsertHook
-	autocmd!
-	autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2E4340
-	autocmd InsertLeave * highlight StatusLine guifg=#2E4340 guibg=#ccdc90
-augroup END
 "}}}
 
 " キーマップの割り当て maping "{{{
 "-------------------------------------------------------------------------------
 "Prefix
 "-------------------------------------------------------------------------------
+nnoremap [VisualStudio] <Nop>
+nmap <silent><Leader>vs [VisualStudio]
 nnoremap [TagJump] <Nop>
 nmap <silent><Leader>t [TagJump]
 nnoremap [ChangeEncode] <Nop>
 nmap <silent><Leader>l [ChangeEncode]
-nnoremap [FuzzyFinder] <Nop>
-nmap <silent><Leader>f [FuzzyFinder]
+nnoremap [YankRing] <Nop>
+nmap <silent><Leader>y [YankRing]
+nnoremap [Gtags] <Nop>
+nmap <silent><Leader>g [Gtags]
+nnoremap [ctrlp] <Nop>
+nmap <silent><Leader>f [ctrlp]
 
 
 "-------------------------------------------------------------------------------
 "実体
 "-------------------------------------------------------------------------------
-nnoremap [FuzzyFinder]f :<C-U>:FufFile<CR>
-nnoremap [FuzzyFinder]b :<C-U>:FufBuffer<CR>
-nnoremap [FuzzyFinder]m :<C-U>:FufMruFile<CR>
+nnoremap [ctrlp]f :<C-U>:CtrlP<CR>
+nnoremap [ctrlp]b :<C-U>:CtrlPBuffer<CR>
+nnoremap [ctrlp]m :<C-U>:CtrlPMRUFiles<CR>
+let g:ctrlp_map = '<Nop>'
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:30,results:50'
+let g:ctrlp_use_migemo = 1
+
+let g:fuf_patternSeparator = ' '
+let g:fuf_modesDisable = ['mrucmd']
+let g:fuf_mrufile_exclude = '\v\.DS_Store|\.git|\.swp|\.svn'
+let g:fuf_mrufile_maxItem = 100
+let g:fuf_enumeratingLimit = 20
+let g:fuf_file_exclude = '\v\.DS_Store|\.git|\.swp|\.svn'
 
 " 行の折り返しキーマップ
 nnoremap <Leader>w  :<C-U>set wrap!<CR>
@@ -142,11 +207,23 @@ nnoremap <Leader>w  :<C-U>set wrap!<CR>
 nnoremap <Leader>e :<C-U>VimFilerBufferDir -simple -split -winwidth=40 -no-quit<CR>
 " nnoremap <Leader>e :<C-U>VimFilerBufferDir -split -winwidth=35 -no-quit<CR>
 
+" quickfixの移動を楽に
+nnoremap <C-N> :cn<CR>
+nnoremap <C-P> :cp<CR>
+
 nnoremap <Leader>m :<C-U>marks<CR>
 " .vimrcを開く
 nnoremap <Leader>.  :<C-U>tabnew $MYVIMRC<CR>
+" .bashrcを開く
+nnoremap <Leader>b  :<C-U>tabnew ~/.bashrc<CR>
+" IMEがONの時IMEをOFFにしてt/fコマンド実行
+nnoremap <silent> t :<C-U>set iminsert=0<CR>t
+nnoremap <silent> T :<C-U>set iminsert=0<CR>T
+nnoremap <silent> f :<C-U>set iminsert=0<CR>f
+nnoremap <silent> F :<C-U>set iminsert=0<CR>F
 
 "tag jumpの振る舞いをごっそり変えてみる。
+
 nnoremap [TagJump]j  <C-]>
 "tag pop / previouse
 nnoremap [TagJump]p  :<C-U>pop<CR>
@@ -157,6 +234,16 @@ nnoremap [TagJump]w  <C-W>}
 " select tag jump.
 nnoremap [TagJump]t  g<C-]>
 
+"Gtagsのキーバインド
+" 関数一覧を検索
+nnoremap [Gtags]f :Gtags -f %<CR>
+" カーソル下の関数定義を検索
+" nnoremap [Gtags]g :Gtags <C-r><C-w><CR>
+nnoremap [Gtags]o :Gtags -g <C-r><C-w><CR>
+nnoremap [Gtags]t :Gtags <C-r><C-w><CR>
+" カーソル下の呼び出し元を検索
+nnoremap [Gtags]r :Gtags -r <C-R><C-W><CR>
+
 "カレントパスを現在編集中のファイルパスに変更
 nnoremap <Leader>cd :<C-U>cd %:h<CR>
 
@@ -164,7 +251,15 @@ nnoremap [ChangeEncode]8 :<C-U>set encoding=utf-8<CR>
 nnoremap [ChangeEncode]c :<C-U>set encoding=CP932<CR>
 
 "バッファを切り替えて切替前のバッファを閉じる
-nnoremap <Leader>bd :<C-U>bn \| bd# <CR>
+nnoremap <Leader>bd :<C-U>bd!<CR>
+
+nnoremap <Leader>x  :<C-U>simalt ~x <CR>
+
+" YankRingの履歴を消去
+nnoremap [YankRing]d  :<C-U>YRClear<CR>
+" YankRingの履歴を消去
+nnoremap [YankRing]s  :<C-U>YRShow<CR>
+let g:yankring_history_dir = "$VIM_TEMP"
 
 " Quickfixpreviewを表示
 nnoremap <Leader>o  :<C-U>copen<CR>
@@ -185,9 +280,11 @@ noremap <C-K> 4k
 noremap <C-E> 4<C-E>
 noremap <C-Y> 4<C-Y>
 
-" x での削除をレジスタリストに追加しない。
+" x/s での削除をレジスタリストに追加しない。
 nnoremap x "_x
 nnoremap X "_X
+nnoremap s "_s
+nnoremap S "_S
 
 " inoremap <C-J> <DOWN>
 " inoremap <C-K> <UP>
@@ -200,15 +297,16 @@ nnoremap <S-Space> <PageUp>
 " inoremap <C-E> <End>
 " inoremap <C-B> <Left>
 " inoremap <C-F> <Right>
-" inoremap <C-L> <Right>
 " inoremap <C-Y> <ESC>yiwea 
 " inoremap <C-D> <delete>
 
 " コマンドラインモードはUnixライクな挙動にする
 cnoremap <C-E> <End>
 cnoremap <C-A> <Home>
-cnoremap <C-F> <Right>
-cnoremap <C-B> <Left>
+" cnoremap <C-F> <Right>
+" cnoremap <C-B> <Left>
+cnoremap <C-H> <BS>
+" cnoremap <C-D> <delete>
 
 " tag jumpをちょっと賢く
 nnoremap <C-]> g<C-]>
@@ -217,7 +315,7 @@ nnoremap <C-]> g<C-]>
 noremap ;  :
 noremap :  ;
 
-inoremap <C-D> <delete>
+" inoremap <C-D> <delete>
 vnoremap <silent><c-p> ?{<CR>
 vnoremap <silent><c-n> /}<CR>
 
@@ -237,20 +335,24 @@ if has('unix')
 endif
 "}}}
 
-" cindent settings"{{{
-" CのSwitchCaseで、caseのインデントがswitchに合うようになる。
-set cindent cino+=:0
-" C++のラベルをインデント開始に合わせる。class {} のなかのpublic:みたいなやつ
-" がきれいに合うようになる。
-set cindent cino+=g0
-" 関数の戻り型の宣言を N 文字インデントする。
-set cindent cino+=t0
-" N が 0 でなければVimはcaseラベル後の文の替わりに、caseラベルそ
-" のものを基本にして配置を行う。
-set cindent cino+=l-1
-" K&Rスタイルの関数宣言の引数宣言を N 文字インデントする。
-set cindent cino+=p0
-"}}}
+"タブ幅・タブインサート幅設定{{{
+let s:coding_styles = {}
+let s:coding_styles['My_style']      = 'set expandtab   tabstop=4 shiftwidth=4 softtabstop&'
+let s:coding_styles['Short_indent']  = 'set expandtab   tabstop=2 shiftwidth=2 softtabstop&'
+let s:coding_styles['GNU']           = 'set expandtab   tabstop=8 shiftwidth=2 softtabstop=2'
+let s:coding_styles['BSD']           = 'set noexpandtab tabstop=8 shiftwidth=4 softtabstop&'
+let s:coding_styles['Linux']         = 'set noexpandtab tabstop=8 shiftwidth=8 softtabstop&'
+
+command!
+	\   -bar -nargs=1 -complete=customlist,s:coding_style_complete
+	\   CodingStyle
+	\   execute get(s:coding_styles, <f-args>, '')
+
+function! s:coding_style_complete(...)
+    return keys(s:coding_styles)
+endfunction
+" }}}
+
 
 " setting of NeoComplete
 " Disable AutoComplPop.
@@ -337,9 +439,14 @@ if has('conceal')
 endif
 
 
+colorscheme jellybeans
 
 " 囲いこみプラグインの自動マッピングをしない
 let g:surround_no_mappings = 0
+let g:user_emmet_leader_key='<c-i>'
+
+" jellybeansの設定上書き
+let g:jellybeans_overrides = { 'Comment': { 'attr': 'none' }, }
 
 "********************************************************************************
 " grep設定
@@ -349,42 +456,58 @@ set grepprg=/bin/grep\ -nH
 "-------------------------------------------------------------------------------
 " ファイルタイプ別設定
 "-------------------------------------------------------------------------------
-" augroup MyAuGroup"{{{
-augroup MyAuGroup
-	autocmd!
+augroup AllType " {{{
 	autocmd BufNewFile,BufRead * set iminsert=0
 	autocmd FileType *  	execute printf("setlocal dict=$VIMRUNTIME/dict/%s.dict", &filetype)
+augroup END "}}}
+
+augroup SourceCodeSettings " {{{
+	autocmd!
+	autocmd BufReadPost *.c,*.cpp,*.h NeoCompleteEnable
 	autocmd FileType c  	setlocal syntax=c.doxygen
 	autocmd FileType cpp  	setlocal syntax=cpp.doxygen
 	autocmd FileType c,cpp  setlocal foldmethod=syntax
-	" autocmd FileType c,cpp  setlocal fdn=3
-	autocmd FileType c,cpp  setlocal fdls=2
-	autocmd FileType c,cpp  setlocal foldcolumn=3
-	" autocmd FileType c,cpp  setlocal foldminlines=20
+	autocmd FileType c,cpp  setlocal fdn=20
+	" オープン時の折りたたみレベル設定
+	autocmd FileType c,cpp  setlocal foldcolumn=0
+	autocmd FileType c,cpp  setlocal foldminlines=10
+	autocmd FileType c,cpp  setlocal fdls=99
+	" 必ず最大化して起動
+	" autocmd FileType c,cpp  simalt ~x
 	" autocmd FileType c,cpp	setlocal includeexpr=substitute(v:fname,'^\\/','','') | setlocal path+=./;/
 	" autocmd FileType c,cpp  set foldmarker=\/\*\*,\*\/
 
 	"-----------------------------------------------------------------------
 	" 各種パスの設定
 	"-----------------------------------------------------------------------
+	autocmd FileType c,cpp setlocal path+=$PMFPATH
+	autocmd FileType c,cpp setlocal include+=$PMFPATH
 	" autocmd FileType c,cpp setlocal includeexpr=substitute(v:fname,'.cpp','h','g')
 
-augroup END
-"}}}
+	autocmd FileType c,cpp setlocal tags=~/proj/X-8128/src/tags,./tags
+	" NeoCompleteの設定
+	" autocmd BufWritePost *.c,*.cpp,*.h  call Maketags()
+	" autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteIncludeMakeCache
+	" autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteBufferMakeCache
+	" autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteTagMakeCache
+	
 
-" " neocomplcache が作成したタグファイルのパスを tags に追加する
-" function! g:UpdateTags()
-" 	setlocal tags=
-" 	for filename in neocomplete#sources#include_complete#get_include_files(bufnr('%'))
-" 		execute "setlocal tags+=" . neocomplete#cache#encode_name('include_tags', filename)
-" 	endfor
-" endfunction
+augroup END "}}}
+
+augroup TextSettings "{{{
+	autocmd!
+	" autocmd BufReadPost *.txt  colorscheme desert
+	autocmd BufReadPost *.txt  setlocal tabstop=2
+	autocmd BufReadPost *.txt  setlocal shiftwidth=2
+	" autocmd BufReadPost *.txt  setlocal fdm=indent
+	" autocmd BufReadPost *.txt  call neocomplete#commands#_lock()
+augroup END "}}}
 
 function! Maketags() "{{{
 	let PathName = expand("%:p:h")
 	call system(
 		\ "ctags".
-		\ " -R --sort=1 --c++-kinds=+cdfgmnpstuvx --file-scope=0 --exclude=.svn --fields=+iaS --extra=+q --language-force=C++ ".
+		\ " -R --tag-relative=yes --sort=1 --c++-kinds=+cdfgmnpstuvx --file-scope=0 --exclude=.svn --fields=+iaS --extra=+q  ".
 		\ PathName)
 
 	" execute "silent !ctags -R `pwd` --sort=1 --c++-kinds=+cdfgmnpstuvx --file-scope=0 --exclude=.svn --fields=+iaS --extra=+q --language-force=C++ "
@@ -443,7 +566,7 @@ endfunction
 
 " Return string used to comment line for current filetype.
 function! CommentStr()
-	if &ft == 'cpp' || &ft == 'java' || &ft == 'javascript'
+	if &ft == 'cpp' || &ft == 'java' || &ft == 'javascript' || &ft == 'scilab'
 		return '//'
 	elseif &ft == 'c'
 		return '//'
@@ -497,14 +620,18 @@ func! s:func_copy_cmd_output(cmd)
 endfunc
 command! -nargs=1 -complete=command CopyCmdOutput call <SID>func_copy_cmd_output(<q-args>)
 
-
-function! GetPixel()
-   let c = getline(".")[col(".") - 1]
-   echo c
-   exe "noremap <LeftMouse> <LeftMouse>r".c
-   exe "noremap <LeftDrag>	<LeftMouse>r".c
+"-------------------------------------------------------------------------------
+" PlantUML
+"-------------------------------------------------------------------------------
+function! Make_PlantUML() 
+	update
+	let fileName = expand("%")
+	call system(
+				\ "java -jar d:/tools/plantuml.jar -charset UTF-8 -tsvg ".
+				\ fileName)
 endfunction
-noremap <RightMouse> <LeftMouse>:call GetPixel()<CR>
-set guicursor=n:hor20	   " to see the color beneath the cursor
+nnoremap <silent><Leader><Leader>u :call Make_PlantUML()<CR>
 
-" vim: fdm=marker
+
+
+" vim: fdm=marker fileformat=unix
