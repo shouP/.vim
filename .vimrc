@@ -353,6 +353,8 @@ function! s:coding_style_complete(...)
 endfunction
 " }}}
 
+let g:markdown_fenced_languages = ['vim', 'cpp', 'bash=sh']
+let g:markdown_folding = 1
 
 " setting of NeoComplete
 " Disable AutoComplPop.
