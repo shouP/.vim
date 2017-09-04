@@ -1,32 +1,25 @@
 set nocompatible
-source $VIMRUNTIME/vimrc_example.vim
+
+source $VIMRUNTIME/defaults.vim
 
 " Vimそのものの動作設定"{{{
+set hlsearch
 set fileformat=unix
 set encoding=utf-8
 "color setting
 set background=dark
 "ファイル保存ダイアログの初期ディレクトリをバッファファイル位置に設定
 set browsedir=buffer
-"クリップボードをWindowsと連携
-" set clipboard=unnamed
+"クリップボード
 set clipboard=unnamed,autoselect
 "変更中のファイルでも、保存しないで他のファイルを表示
 set hidden
-"font setting
-" set gfn=MeiryoKe_Gothic:h10:cSHIFTJIS
-set guifont=MigMix_1M:h10:cSHIFTJIS
-
 "行末折り返しを禁止
 set tw=0
 "バックアップを作成しない
 set nobackup
 "スワップファイルを作成しない
 set noswapfile
-"行数
-" set lines=100
-"列数
-" set co=140
 "括弧の入力時にカーソルを対応する括弧の上に一定時間表示させる
 set showmatch
 "マッチした括弧の始めを表示する時間(100ms order)
@@ -39,23 +32,18 @@ set textwidth=0
 set linebreak
 " Hack #76: Insert mode中で単語単位/行単位の削除を行なう
 set backspace=indent,eol,start
-if exists('g:Align_xstrlen') 
-	"http://nanasi.jp/articles/vim/align/align_vim.html 
-	" Alignを日本語環境で使用するための設定
-	let g:Align_xstrlen = 3
-	"実際には、この設定は完璧には機能していないようなので、 
-	"現段階では設定を追加しなくても良いと思います。
-endif
 " カーソルライン表示
 set cursorline
-" Diffopt
-" set diffopt=vertical
-" GUIからアイコンを削除
+" GUI setting
 set guioptions-=T
+" 右のスクロールバーを非表示
 set guioptions-=m
+" 左のスクロールバーを非表示
+set guioptions-=L
+
 "日本語の行の連結時には空白を入力しない
 set formatoptions+=mM
-set so=0
+set scrolloff=0
 
 " このセクションの項目はデフォルトのvimrcで上書きされてしまうため、ここで設定 {{{
 " しても元に戻されてしまう。そのため、gvimrcに記述しないとダメっぽい。
@@ -63,17 +51,13 @@ set so=0
 set cmdheight=1
 " ステータス行を無くして、画面描画をより広くする
 set laststatus=0
+" コピペモードトグル
+set pastetoggle=<F9>
 "}}}
 "
 let mapleader = ","
 let g:netrw_winsize   = 30
 
-" 右のスクロールバーを非表示
-set guioptions-=m
-" 左のスクロールバーを非表示
-set guioptions-=L
-
-set undodir=z:/.vim/undo
 "}}}
 
 " 現在のファイルに対する動作設定"{{{
@@ -145,9 +129,9 @@ set statusline+=%w
 " これ以降は右寄せ表示
 set statusline+=%=
 " file encoding
-set statusline+=[ENC=%{&fileencoding}]
+" set statusline+=[ENC=%{&fileencoding}]
 " 現在行数/全行数
-set statusline+=[LOW=%l/%L]
+" set statusline+=[LOW=%l/%L]
 " ステータスラインを常に表示(0:表示しない、1:2つ以上ウィンドウがある時だけ表示)
 set laststatus=2
 
@@ -161,7 +145,6 @@ augroup VimrcReloadGrp
 		" .vimrcの再読込時にも色が変化するようにする
 		autocmd VimrcReloadGrp BufWritePost $MYVIMRC source $MYVIMRC | if has('gui_running') | source $MYGVIMRC
 		autocmd VimrcReloadGrp BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
-		" autocmd VimrcReloadGrp BufWritePost $MYVIMRC call writefile($MYVIMRC, "A:/env/vim/vim_config", 'b')
 	endif
 
 "}}}
@@ -182,6 +165,8 @@ nnoremap [Gtags] <Nop>
 nmap <silent><Leader>g [Gtags]
 nnoremap [ctrlp] <Nop>
 nmap <silent><Leader>f [ctrlp]
+nnoremap [fuzzyFinder] <Nop>
+nmap <silent><Leader>z [fuzzyFinder]
 
 
 "-------------------------------------------------------------------------------
@@ -193,7 +178,10 @@ nnoremap [ctrlp]m :<C-U>:CtrlPMRUFiles<CR>
 let g:ctrlp_map = '<Nop>'
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:30,results:50'
 let g:ctrlp_use_migemo = 1
+let g:ctrlp_show_hidden = 1
 
+nnoremap [fuzzyFinder]b :FufBuffer!<CR>
+nnoremap [fuzzyFinder]f :FufFile!<CR>
 let g:fuf_patternSeparator = ' '
 let g:fuf_modesDisable = ['mrucmd']
 let g:fuf_mrufile_exclude = '\v\.DS_Store|\.git|\.swp|\.svn'
@@ -263,6 +251,7 @@ let g:yankring_history_dir = "$VIM_TEMP"
 
 " Quickfixpreviewを表示
 nnoremap <Leader>o  :<C-U>copen<CR>
+autocmd QuickFixCmdPost *grep* cwindow
 
 " 画面サイズ変更
 noremap <LEFT>  <C-W><<ESC>
@@ -326,7 +315,9 @@ nnoremap gc  `[v`]$
 nnoremap <silent><C-Tab> :<C-U>bnext<CR>
 nnoremap <silent><S-C-Tab> :<C-U>bprevious<CR>
 
-nnoremap <C-G> gv
+" <CR>で発動したかったが、コマンドラインウィンドウで誤発動するのでF10にする
+" nnoremap <CR> :<C-U>noh<CR>
+nnoremap <F10> :<C-U>noh<CR>
 
 " Linux環境でのクリップボードコピー
 if has('unix')
@@ -434,6 +425,7 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+let g:neosnippet#snippets_directory='~/github/shouP/neosnippet-snippets/neosnippets'
 
 " For conceal markers.
 if has('conceal')
