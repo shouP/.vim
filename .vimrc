@@ -179,6 +179,10 @@ let g:ctrlp_map = '<Nop>'
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:30,results:50'
 let g:ctrlp_use_migemo = 1
 let g:ctrlp_show_hidden = 1
+let g:ctrlp_custom_ignore = {
+	\ 'dir':  '\v[\/]\.(obj|git|svn)$',
+	\ 'file': '\v\.(exe|so(|\..*)|dll|a|o(|\..*))$',
+	\ }
 
 nnoremap [fuzzyFinder]b :FufBuffer!<CR>
 nnoremap [fuzzyFinder]f :FufFile!<CR>
@@ -347,7 +351,9 @@ endfunction
 let g:markdown_fenced_languages = ['viml=vim', 'vim', 'cpp', 'bash=sh']
 let g:markdown_folding = 1
 
+"-------------------------------------------------------------------------------
 " setting of NeoComplete
+"{{{
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
 " Use neocomplete.
@@ -358,6 +364,11 @@ let g:neocomplete#enable_smart_case = 1
 let g:neocomplete#sources#syntax#min_keyword_length = 3
 
 " Define dictionary.
+if !exists('g:neocomplete#sources')
+	let g:neocomplete#sources = {}
+endif
+let g:neocomplete#sources._ = ['buffer']
+let g:neocomplete#sources.cpp = ['buffer', 'dictionary']
 let g:neocomplete#sources#dictionary#dictionaries = {
     \ 'default' : '',
     \ 'vimshell' : $HOME.'/.vimshell_hist',
@@ -399,18 +410,24 @@ autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd FileType c,cpp setlocal omnifunc=ccomplete#Complete
 
 " Enable heavy omni completion.
 if !exists('g:neocomplete#sources#omni#input_patterns')
   let g:neocomplete#sources#omni#input_patterns = {}
 endif
-"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
 let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
 " For perlomni.vim setting.
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+if !exists('g:neocomplete#delimiter_patterns')
+	let g:neocomplete#delimiter_patterns= {}
+endif
+let g:neocomplete#delimiter_patterns.vim = ['#']
+let g:neocomplete#delimiter_patterns.cpp = ['::']
 
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -426,6 +443,8 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 let g:neosnippet#snippets_directory='~/github/shouP/neosnippet-snippets/neosnippets'
+
+"-------------------------------------------------------------------------------}}}
 
 " For conceal markers.
 if has('conceal')
@@ -446,6 +465,9 @@ let g:jellybeans_overrides = { 'Comment': { 'attr': 'none' }, }
 " grep設定
 "********************************************************************************
 set grepprg=/bin/grep\ -nH
+let MyGrep_DefaultSearchWord = 1
+let QFixWin_EnableMode = 1
+let QFix_UserLocationList = 0
 
 "-------------------------------------------------------------------------------
 " ファイルタイプ別設定
@@ -457,7 +479,6 @@ augroup END "}}}
 
 augroup SourceCodeSettings " {{{
 	autocmd!
-	autocmd BufReadPost *.c,*.cpp,*.h NeoCompleteEnable
 	autocmd FileType c  	setlocal syntax=c.doxygen
 	autocmd FileType cpp  	setlocal syntax=cpp.doxygen
 	autocmd FileType c,cpp  setlocal foldmethod=syntax
@@ -466,24 +487,18 @@ augroup SourceCodeSettings " {{{
 	autocmd FileType c,cpp  setlocal foldcolumn=0
 	autocmd FileType c,cpp  setlocal foldminlines=10
 	autocmd FileType c,cpp  setlocal fdls=99
-	" 必ず最大化して起動
-	" autocmd FileType c,cpp  simalt ~x
 	" autocmd FileType c,cpp	setlocal includeexpr=substitute(v:fname,'^\\/','','') | setlocal path+=./;/
-	" autocmd FileType c,cpp  set foldmarker=\/\*\*,\*\/
 
 	"-----------------------------------------------------------------------
 	" 各種パスの設定
 	"-----------------------------------------------------------------------
-	autocmd FileType c,cpp setlocal path+=$PMFPATH
-	autocmd FileType c,cpp setlocal include+=$PMFPATH
-	" autocmd FileType c,cpp setlocal includeexpr=substitute(v:fname,'.cpp','h','g')
+	autocmd FileType c,cpp setlocal path+=$INCLUDEPATHLIST
+	autocmd FileType c,cpp setlocal tags=$TAGFILELIST,./tags
 
-	autocmd FileType c,cpp setlocal tags=~/proj/X-8128/src/tags,./tags
 	" NeoCompleteの設定
-	" autocmd BufWritePost *.c,*.cpp,*.h  call Maketags()
-	" autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteIncludeMakeCache
-	" autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteBufferMakeCache
-	" autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteTagMakeCache
+	autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteBufferMakeCache
+	autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteTagMakeCache
+	autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteMemberMakeCache
 	
 
 augroup END "}}}
