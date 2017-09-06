@@ -467,7 +467,8 @@ let g:jellybeans_overrides = { 'Comment': { 'attr': 'none' }, }
 set grepprg=/bin/grep\ -nH
 let MyGrep_DefaultSearchWord = 1
 let QFixWin_EnableMode = 1
-let QFix_UserLocationList = 0
+let QFix_UseLocationList = 0
+let MyGrep_ExcludeReg = '[~#]$\|\.bak$\|\.o$\|\.obj$\|\.exe$\|[/\\]tags$\|^tags$\|\.a$\|\.so$\|[/\\].git[/\\][/\\].obj[/\\]'
 
 "-------------------------------------------------------------------------------
 " ファイルタイプ別設定
