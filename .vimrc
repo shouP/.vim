@@ -3,6 +3,7 @@ set nocompatible
 source $VIMRUNTIME/defaults.vim
 
 " Vimそのものの動作設定"{{{
+set mouse-=a
 set hlsearch
 set fileformat=unix
 set encoding=utf-8
@@ -153,20 +154,18 @@ augroup VimrcReloadGrp
 "-------------------------------------------------------------------------------
 "Prefix
 "-------------------------------------------------------------------------------
-nnoremap [VisualStudio] <Nop>
-nmap <silent><Leader>vs [VisualStudio]
 nnoremap [TagJump] <Nop>
 nmap <silent><Leader>t [TagJump]
 nnoremap [ChangeEncode] <Nop>
 nmap <silent><Leader>l [ChangeEncode]
 nnoremap [YankRing] <Nop>
-nmap <silent><Leader>y [YankRing]
-nnoremap [Gtags] <Nop>
 nmap <silent><Leader>g [Gtags]
 nnoremap [ctrlp] <Nop>
 nmap <silent><Leader>f [ctrlp]
 nnoremap [fuzzyFinder] <Nop>
 nmap <silent><Leader>z [fuzzyFinder]
+nnoremap [make] <Nop>
+nmap <silent><Leader>m [make]
 
 
 "-------------------------------------------------------------------------------
@@ -203,7 +202,10 @@ nnoremap <Leader>e :<C-U>VimFilerBufferDir -simple -split -winwidth=40 -no-quit<
 nnoremap <C-N> :cn<CR>
 nnoremap <C-P> :cp<CR>
 
-nnoremap <Leader>m :<C-U>marks<CR>
+nnoremap [make]m :<C-U>update<CR>:make<CR>
+nnoremap [make]r :<C-U>update<CR>:make run_test<CR>
+nnoremap [make]a :<C-U>update<CR>:make all<CR>
+
 " .vimrcを開く
 nnoremap <Leader>.  :<C-U>tabnew $MYVIMRC<CR>
 " .bashrcを開く
@@ -246,6 +248,8 @@ nnoremap [ChangeEncode]c :<C-U>set encoding=CP932<CR>
 nnoremap <Leader>bd :<C-U>bd!<CR>
 
 nnoremap <Leader>x  :<C-U>simalt ~x <CR>
+nnoremap <Leader>fd  :<C-U>!git diff %<CR>
+
 
 " YankRingの履歴を消去
 nnoremap [YankRing]d  :<C-U>YRClear<CR>
@@ -367,8 +371,8 @@ let g:neocomplete#sources#syntax#min_keyword_length = 3
 if !exists('g:neocomplete#sources')
 	let g:neocomplete#sources = {}
 endif
-let g:neocomplete#sources._ = ['buffer']
-let g:neocomplete#sources.cpp = ['buffer', 'dictionary']
+"let g:neocomplete#sources._ = ['buffer']
+"let g:neocomplete#sources.cpp = ['buffer', 'dictionary']
 let g:neocomplete#sources#dictionary#dictionaries = {
     \ 'default' : '',
     \ 'vimshell' : $HOME.'/.vimshell_hist',
@@ -442,7 +446,7 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-let g:neosnippet#snippets_directory='~/github/shouP/neosnippet-snippets/neosnippets'
+let g:neosnippet#snippets_directory='~/github/shoup_snip/neosnippets/'
 
 "-------------------------------------------------------------------------------}}}
 
@@ -483,7 +487,7 @@ augroup SourceCodeSettings " {{{
 	autocmd FileType c  	setlocal syntax=c.doxygen
 	autocmd FileType cpp  	setlocal syntax=cpp.doxygen
 	autocmd FileType c,cpp  setlocal foldmethod=syntax
-	autocmd FileType c,cpp  setlocal fdn=20
+	autocmd FileType c,cpp  setlocal fdn=5
 	" オープン時の折りたたみレベル設定
 	autocmd FileType c,cpp  setlocal foldcolumn=0
 	autocmd FileType c,cpp  setlocal foldminlines=10
@@ -494,7 +498,7 @@ augroup SourceCodeSettings " {{{
 	" 各種パスの設定
 	"-----------------------------------------------------------------------
 	autocmd FileType c,cpp setlocal path+=$INCLUDEPATHLIST
-	autocmd FileType c,cpp setlocal tags=$TAGFILELIST,./tags
+	autocmd FileType c,cpp setlocal tags=$VIMTAGFILELIST,./tags
 
 	" NeoCompleteの設定
 	autocmd BufWritePost *.c,*.cpp,*.h  NeoCompleteBufferMakeCache
@@ -511,6 +515,7 @@ augroup TextSettings "{{{
 	autocmd BufReadPost *.txt  setlocal shiftwidth=2
 	" autocmd BufReadPost *.txt  setlocal fdm=indent
 	" autocmd BufReadPost *.txt  call neocomplete#commands#_lock()
+	autocmd BufReadPost *.gnu  	setlocal ft=gnuplot
 augroup END "}}}
 
 function! Maketags() "{{{
@@ -637,7 +642,7 @@ function! Make_PlantUML()
 	update
 	let fileName = expand("%")
 	call system(
-				\ "java -jar d:/tools/plantuml.jar -charset UTF-8 -tsvg ".
+				\ "java -Dplantuml.include.path=\"${PLANTUML_INCLUDE_PATH}\" -jar /usr/local/bin/plantuml.jar -charset UTF-8 -tsvg ".
 				\ fileName)
 endfunction
 nnoremap <silent><Leader><Leader>u :call Make_PlantUML()<CR>
