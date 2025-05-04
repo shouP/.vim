@@ -1,66 +1,12 @@
-[submodule "pack/github/start/jellybeans.vim"]
-	path = pack/github/start/jellybeans.vim
-	url = https://github.com/nanotech/jellybeans.vim.git
 [submodule "pack/github/start/neocomplete.vim"]
 	path = pack/github/start/neocomplete.vim
 	url = https://github.com/Shougo/neocomplete.vim.git
 [submodule "pack/github/start/neosnippet.vim"]
 	path = pack/github/start/neosnippet.vim
 	url = https://github.com/Shougo/neosnippet.vim.git
-[submodule "pack/github/start/FuzzyFinder"]
-	path = pack/github/start/FuzzyFinder
-	url = https://github.com/vim-scripts/FuzzyFinder.git
-[submodule "pack/github/start/L9"]
-	path = pack/github/start/L9
-	url = https://github.com/vim-scripts/L9.git
-[submodule "pack/github/start/vimfiler.vim"]
-	path = pack/github/start/vimfiler.vim
-	url = https://github.com/Shougo/vimfiler.vim.git
 [submodule "pack/github/start/unite.vim"]
 	path = pack/github/start/unite.vim
 	url = https://github.com/Shougo/unite.vim.git
 [submodule "pack/github/start/neosnippet-snippets"]
 	path = pack/github/start/neosnippet-snippets
 	url = https://github.com/shouP/neosnippet-snippets.git
-[submodule "pack/github/start/vim-cpp"]
-	path = pack/github/start/vim-cpp
-	url = https://github.com/vim-jp/vim-cpp.git
-[submodule "pack/github/start/qfixgrep"]
-	path = pack/github/start/qfixgrep
-	url = https://github.com/fuenor/qfixgrep.git
-[submodule "pack/github/start/gtags.vim"]
-	path = pack/github/start/gtags.vim
-	url = https://github.com/vim-scripts/gtags.vim.git
-[submodule "pack/github/start/open-browser.vim"]
-	path = pack/github/start/open-browser.vim
-	url = https://github.com/tyru/open-browser.vim.git
-[submodule "pack/github/start/molokai"]
-	path = pack/github/start/molokai
-	url = https://github.com/tomasr/molokai
-[submodule "pack/github/start/taglist.vim"]
-	path = pack/github/start/taglist.vim
-	url = https://github.com/vim-scripts/taglist.vim.git
-[submodule "pack/github/start/STL-Syntax"]
-	path = pack/github/start/STL-Syntax
-	url = https://github.com/vim-scripts/STL-Syntax.git
-[submodule "pack/github/start/Cpp11-Syntax-Support"]
-	path = pack/github/start/Cpp11-Syntax-Support
-	url = https://github.com/vim-scripts/Cpp11-Syntax-Support.git
-[submodule "pack/github/start/FastFold"]
-	path = pack/github/start/FastFold
-	url = https://github.com/vim-scripts/FastFold.git
-[submodule "pack/github/start/vim-surround"]
-	path = pack/github/start/vim-surround
-	url = https://github.com/tpope/vim-surround.git
-[submodule "pack/github/start/vim-colors-solarized"]
-	path = pack/github/start/vim-colors-solarized
-	url = https://github.com/altercation/vim-colors-solarized.git
-[submodule "pack/github/start/ctrlp.vim"]
-	path = pack/github/start/ctrlp.vim
-	url = https://github.com/kien/ctrlp.vim.git
-[submodule "pack/github/start/plantuml-syntax"]
-	path = pack/github/start/plantuml-syntax
-	url = https://github.com/aklt/plantuml-syntax.git
-[submodule "pack/github/start/vim-markdown"]
-	path = pack/github/start/vim-markdown
-	url = https://github.com/tpope/vim-markdown.git
