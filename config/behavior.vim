@@ -142,6 +142,7 @@ augroup VimrcReloadGrp
 	autocmd!
 	if !has('gui_running') && !(has('win32') || has('win64'))
 		" .vimrcの再読込時にも色が変化するようにする
+		
 		autocmd VimrcReloadGrp BufWritePost $MYVIMRC nested source $MYVIMRC
 	endif
 
@@ -156,3 +157,25 @@ let g:jellybeans_overrides = { 'Comment': { 'attr': 'none' }, }
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
+
+""""""""""""""""""""""""""""""
+"ファイルを開いたら前回のカーソル位置へ移動
+""""""""""""""""""""""""""""""
+augroup vimrcEx
+	autocmd!
+	autocmd BufReadPost *
+				\ if line("'\"") > 1 && line("'\"") <= line('$') |
+				\   exe "normal! g`\"" |
+				\ endif
+augroup END
+
+"タブ幅・タブインサート幅設定{{{
+let s:coding_styles = {}
+let s:coding_styles['My_style']      = 'set expandtab   tabstop=4 shiftwidth=4 softtabstop&'
+let s:coding_styles['Short_indent']  = 'set expandtab   tabstop=2 shiftwidth=2 softtabstop&'
+let s:coding_styles['GNU']           = 'set expandtab   tabstop=8 shiftwidth=2 softtabstop=2'
+let s:coding_styles['BSD']           = 'set noexpandtab tabstop=8 shiftwidth=4 softtabstop&'
+let s:coding_styles['Linux']         = 'set noexpandtab tabstop=8 shiftwidth=8 softtabstop&'
+
+let g:markdown_fenced_languages = ['viml=vim', 'vim', 'cpp', 'bash=sh']
+let g:markdown_folding = 1
