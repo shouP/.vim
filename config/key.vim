@@ -1,4 +1,6 @@
 " キーマップの割り当て maping 
+let mapleader = ","
+
 "-------------------------------------------------------------------------------
 "Prefix
 "-------------------------------------------------------------------------------
@@ -15,24 +17,10 @@ nmap <silent><Leader>m [make]
 "実体
 "-------------------------------------------------------------------------------
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/build/*,*/Output/*,*/.cppcheck/*
-nnoremap [ctrlp]f :<C-U>:CtrlP<CR>
-nnoremap [ctrlp]b :<C-U>:CtrlPBuffer<CR>
-nnoremap [ctrlp]m :<C-U>:CtrlPMRUFiles<CR>
-let g:ctrlp_map = '<Nop>'
-let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:30,results:50'
-let g:ctrlp_use_migemo = 1
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_custom_ignore = {
-	\ 'dir':  '\v[\/]\.(obj|git|svn)$',
-	\ 'file': '\v\.(exe|so(|\..*)|wav|png|jpg|dll|a|o(|\..*))$',
-	\ }
-let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
-
 " 行の折り返しキーマップ
 nnoremap <Leader>w  :<C-U>set wrap!<CR>
 " スペース＋e でエクスプローラ起動
-nnoremap <Leader>e :<C-U>VimFilerBufferDir -simple -split -winwidth=40 -no-quit<CR>
-" nnoremap <Leader>e :<C-U>VimFilerBufferDir -split -winwidth=35 -no-quit<CR>
+nnoremap <Leader>e :<C-U>Lexplore<CR>
 
 " quickfixの移動を楽に
 nnoremap <C-N> :cn<CR>
@@ -140,10 +128,6 @@ vnoremap <silent><c-n> /}<CR>
 
 " 最後に変更されたテキストを選択する(不完全)
 nnoremap gc  `[v`]$
-
-" Tabキーで全バッファを巡回
-nnoremap <silent><C-Tab> :<C-U>bnext<CR>
-nnoremap <silent><S-C-Tab> :<C-U>bprevious<CR>
 
 " <CR>で発動したかったが、コマンドラインウィンドウで誤発動するのでF10にする
 " nnoremap <CR> :<C-U>noh<CR>

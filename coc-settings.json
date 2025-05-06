@@ -1,0 +1,18 @@
+{
+	"suggest.enablePreselect": true,
+	"clangd.fallbackFlags": [ "-std=c++17" ],
+	"hover.floatConfig": {
+		"focusable": true
+	},
+	"languageserver": {
+		"swift": {
+			"command": "/Users/ben/dev/GitHub/sourcekit-lsp/.build/x86_64-apple-macosx/debug/sourcekit-lsp",
+			"args": [],
+			"filetypes": ["swift"],
+			"initializationOptions": {},
+			"settings": {
+			}
+		}
+	}
+}
+
