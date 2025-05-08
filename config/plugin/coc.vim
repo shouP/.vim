@@ -40,7 +40,7 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 " GoTo code navigation
 nmap <silent><nowait> gd <Plug>(coc-definition)
 nmap <silent><nowait> gy <Plug>(coc-type-definition)
-nmap <silent><nowait> gh call ShowDocumentation()<CR>
+nmap <silent><nowait> gh :call ShowDocumentation()<CR>
 nmap <silent><nowait> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
@@ -54,7 +54,7 @@ function! ShowDocumentation()
   endif
 endfunction
 
-hi CocFloating ctermbg=darkgray
+"hi CocFloating ctermbg=White
 hi CocListSearch ctermbg=darkgray
 hi CocMenuSel ctermfg=darkcyan
 
@@ -64,7 +64,8 @@ hi link CocHintFloat   Comment
 hi link CocInlayHint   Comment
 hi link CocInlayHintParameter Comment
 hi link CocInlayHintType Comment
-hi CocErrorFloat ctermfg=darkred
+hi CocErrorFloat ctermfg=Darkred ctermbg=White
+hi CocHintFloat ctermbg=White
 
 "-------------------------------------------------------------------------------
 " For coc snippets
@@ -75,19 +76,16 @@ imap <C-l> <Plug>(coc-snippets-expand)
 " Use <C-k> for select text for visual placeholder of snippet.
 vmap <C-k> <Plug>(coc-snippets-select)
 
-let g:coc_snippet_next = '<c-k>'
-let g:coc_snippet_prev = '<c-j>'
-
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-k> <Plug>(coc-snippets-expand-jump)
 
 " Use <leader>x for convert visual selected code to snippet
 xmap <leader>x  <Plug>(coc-convert-snippet)
 
-inoremap <silent><expr> <TAB>
+inoremap <silent><expr> <c-k>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ <SID>check_back_space() ? "\<c-k>" :
       \ coc#refresh()
 
 function! s:check_back_space() abort
@@ -95,4 +93,5 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_next = '<c-k>'
+let g:coc_snippet_prev = '<c-j>'

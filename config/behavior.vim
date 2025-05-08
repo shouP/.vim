@@ -190,3 +190,8 @@ let g:netrw_timefmt="%Y/%m/%d(%a) %H:%M:%S"
 " プレビューウィンドウを垂直分割で表示する
 let g:netrw_preview=1
 let g:netrw_winsize   = 30
+
+if &term !~ "xterm-color"
+autocmd BufEnter * if bufname("") !~ "^?[A-Za-z0-9?]*://" | silent! exe '!echo -n "^[k[`basename %`]^[??"' | endif
+autocmd VimLeave * silent! exe '!echo -n "^[k`dirs`^[??"'
+endif
